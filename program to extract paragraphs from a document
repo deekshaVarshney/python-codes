@@ -1,0 +1,13 @@
+text=open('test.txt')
+
+lines=text.readlines()
+para=[]
+paragraph=''
+for line in lines:
+ #print line
+ if line.isspace():
+  paragraph=''
+ else:
+  paragraph+=' '+line.strip()
+  para.append(paragraph)
+print para
