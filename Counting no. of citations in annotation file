@@ -1,0 +1,66 @@
+from pprint import pprint
+import os
+
+
+#text=open('/home/deeksha/Downloads/scisumm-corpus-master/data/Training-Set-2017/C00-2123.ann.txt')
+l=[]
+para=[]
+dic={}
+dic['Discourse Facet']=[]
+dic['Citation Marker']=[]
+c=0
+no_of_docs=0
+directory='/home/deeksha/Downloads/scisumm-corpus-master/data/Training-Set-2017/'
+for folder in os.listdir(directory):
+ if folder.endswith('.md'):
+  continue
+ else:
+  subfolder=os.path.join(directory,folder+'/annotation')
+  #print subfolder
+  for filename in os.listdir(subfolder):
+   #print filename
+   no_of_docs+=1
+   if filename.endswith('.txt'):
+    file=os.path.join(subfolder,filename)
+    #print filename,file
+    text=open(file)
+    #print text
+    lines=text.readlines()
+    
+    paragraph=''
+    for line in lines:
+     #print line
+     if line.isspace():
+      paragraph=''
+     else:
+      paragraph+=' '+line.strip()
+      para.append(paragraph)
+    #print len(para)
+    c=c+len(para)
+
+for p in para:
+ for x in p.split('|'):
+  for y in x.split(':'):
+   l.append(y)
+l=[x.strip(' ') for x in l]
+#print l
+a=iter(l)
+    
+for ll in a:
+ if ll == 'Discourse Facet':
+  #print ll
+  dic[ll].append(next(a))
+ if ll == 'Citation Marker':
+  #print ll
+
+  dic[ll].append(next(a))
+
+pprint(set(dic['Discourse Facet']))
+ 
+count = {}
+
+for key, values in dic.items():
+        count[key] = len(values)
+
+print count
+print 'average no. of citations:',count['Citation Marker']/no_of_docs
