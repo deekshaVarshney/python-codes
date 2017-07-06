@@ -1,0 +1,15 @@
+def parse_Xml(xmlfile):
+ parser = ET.XMLParser(recover=True)
+ tree=ET.fromstring( parser=parser)
+ tree = ET.parse(xmlfile)
+ root = tree.getroot()
+ docs=[]
+ for item in root.findall('.'):
+  files=[]
+  for child in item:
+   if child.tag == '{http://search.yahoo.com/mrss/}content':
+    files['media'] = child.attrib['url']
+   else:
+    files[child.tag] = child.text.encode('utf8') 
+  docs.append(files)
+
