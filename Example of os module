@@ -1,0 +1,20 @@
+import os
+path='/home/deeksha/Downloads/scisumm-corpus-master/data/Training-Set-2017'
+def targetFolder(path):
+ for di in os.listdir(path):
+  #print di
+  file_p=os.path.join(path,di)
+  if file_p.endswith('.md'):
+   continue
+  for d in os.listdir(file_p):
+   #print d
+   if d=='Reference_TXT':
+    file_path=os.path.join(file_p,d)
+    for files in os.listdir(file_path):
+     print files
+     f.append(files)
+     xmlfile=os.path.join(file_path,files)   
+     datac=readdata(xmlfile)
+     return datac
+    
+targetFolder(path)
