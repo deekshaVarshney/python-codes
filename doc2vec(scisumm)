@@ -1,0 +1,64 @@
+import os
+import gensim
+from bs4 import BeautifulSoup
+path='/home/deeksha/Downloads/scisumm-corpus-master/data/Training-Set-2017'
+
+def readdata(xmlfile):
+ 
+ data.append(open(xmlfile).read())
+
+def targetFolder(path):
+ docs={}
+ docs['title']=[]
+ docs['contents']=[]
+ for di in os.listdir(path):
+  file_p=os.path.join(path,di)
+  if file_p.endswith('.md'):
+   continue
+  for d in os.listdir(file_p):
+   if d=='Reference_XML':
+    file_path=os.path.join(file_p,d)
+    for files in os.listdir(file_path):
+     infile = open(file_path+'/'+files,"r")
+     contents = infile.read()
+     soup = BeautifulSoup(contents,'xml')
+     titles = soup.find_all('S')
+     
+     for title in titles:
+      if title['sid']=='0':
+       #print(title.get_text())
+       docs['title'].append(title.get_text())
+     
+     contents=soup.find_all('PAPER')
+     for content in contents:
+      docs['contents'].append(content.get_text())
+ return docs
+
+
+
+
+docs=targetFolder(path)
+#print docs
+#for title in docs['title']:
+ #print title
+
+def TaggedDocuments(docs):
+ for c in docs['contents']:
+  for t in docs['title']:
+   yield gensim.models.doc2vec.TaggedDocument(gensim.utils.simple_preprocess(c),[t])
+
+
+documents=list(TaggedDocuments(docs))
+#print documents[:1]
+
+#model = gensim.models.doc2vec.Doc2Vec(size=100, min_count=2, iter=5)
+#model.build_vocab(documents)
+#print model.vocab('copy')
+#model.train(documents, total_examples=model.corpus_count, epochs=model.iter)
+#model.save('doc2vec.model')
+model = gensim.models.doc2vec.Doc2Vec.load('doc2vec.model')
+#print(model.docvecs.most_similar('Estimation of Probabilistic Context-Free Grammars'))
+vec=(model.infer_vector('Estimation of Probabilistic Context-Free Grammars'))
+print(model.docvecs.most_similar(positive=['Named Entity Recognition: A Maximum Entropy Approach Using Global Information'],topn=20))
+
+
